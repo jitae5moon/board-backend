@@ -3,7 +3,7 @@ package com.example.board_backend.repository;
 import com.example.board_backend.domain.Todo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +14,7 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@DataJpaTest
 class TodoRepositoryTest {
 
     TodoRepository sut;
@@ -27,14 +27,15 @@ class TodoRepositoryTest {
     @Test
     void givenTodo_whenSavingTodo_thenSavesTodo() {
         // Given
-        Todo todo = createTodo();
+        long prevCount = sut.count();
+        Todo todo = createTodo(prevCount + 1);
 
         // When
         sut.save(todo);
 
         // Then
-        long count = sut.count();
-        assertThat(count).isEqualTo(1);
+        long actual = sut.count();
+        assertThat(actual).isEqualTo(prevCount + 1);
     }
 
     @Test
